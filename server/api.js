@@ -3,9 +3,9 @@ const mysqlDb = require('mysql');
 const server = mysqlDb.createConnection({
     host: 'localhost',
     database: 'crowdfunding_db',
-    port: '3306',
+    port: '3308',
     user: 'root',
-    password: '123456',
+    password: 'Lumingyu7301',
 })
 server.connect()
 const express = require('express');
