@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CrowdFunding</title>
+    <link rel="stylesheet" href="css/reset.css">
+</head>
+<body>
+<div class="system-container">
+    <div class="container-header">
+        <div class="header-name">CrowdFunding System</div>
+        <div class="nav-list">
+            <a href="./index.html" class="nav-item">Home</a>
+            <a href="./fundraiser.html" class="nav-item">Fundraiser</a>
+        </div>
+    </div>
+    <div class="container-content">
+        <div class="detail-inner">
+            <img src="./imgs/img2.png" alt="">
+            <table class="table-container" border="1">
+                <tbody>
+                <tr>
+                    <td>Caption</td>
+                    <td><i class="caption"></i></td>
+                </tr>
+                <tr>
+                    <td>Organizer</td>
+                    <td><i class="organizer"></i></td>
+                </tr>
+                <tr>
+                    <td>Category</td>
+                    <td><i class="category"></i></td>
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td><i class="city"></i></td>
+                </tr>
+                <tr>
+                    <td>Target Funding</td>
+                    <td><i class="target-funding"></i></td>
+                </tr>
+                <tr>
+                    <td>Current Funding</td>
+                    <td><i class="current-funding"></i></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button class="donation-btn">Donation</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="detail">A little makes a lot. I need your help</div>
+    </div>
+</div>
+</body>
+<script src="js/http.js"></script>
+<script>
+    window.onload = function(){
+        searchInfoByFundraiserId();
+        document.getElementsByClassName('donation-btn')[0].onclick = () => {
+            alert('This feature is under construction');
+        }
+    }
+    // search Info By Fundraiser Id
+    function searchInfoByFundraiserId() {
+        const params = {
+            fundraiser_id: Number(location.href.split('=')[1]) || ''
+        };
+        httpRequest('/searchInfoByFundraiserId', params).then(response => {
+            // render data
+            document.getElementsByClassName('caption')[0].innerText = response.caption;
+            document.getElementsByClassName('organizer')[0].innerText = response.organizer;
+            document.getElementsByClassName('category')[0].innerText = response.name;
+            document.getElementsByClassName('city')[0].innerText = response.city;
+            document.getElementsByClassName('current-funding')[0].innerText = response.current_funding;
+            document.getElementsByClassName('target-funding')[0].innerText = response.target_funding;
+        });
+    }
+</script>
+</html>

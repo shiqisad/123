@@ -1,11 +1,11 @@
-const mysqlDb = require('mysql2');
+const mysqlDb = require('mysql');
 // mysql db server
 const server = mysqlDb.createConnection({
     host: 'localhost',
     database: 'crowdfunding_db',
-    port: '3308',
+    port: '3306',
     user: 'root',
-    password: 'Lumingyu7301',
+    password: '123456',
 })
 server.connect()
 const express = require('express');

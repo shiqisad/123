@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/reset.css">
+</head>
+<body>
+<div class="system-container">
+    <div class="container-header">
+        <div class="header-name">CrowdFunding System</div>
+        <div class="nav-list">
+            <a href="./index.html" class="nav-item">Home</a>
+            <a href="./fundraiser.html" class="nav-item">Fundraiser</a>
+        </div>
+    </div>
+    <div class="container-content">
+        <div class="imgs">
+            <img src="./imgs/img2.png" alt="">
+            <img src="./imgs/img1.png" alt="">
+        </div>
+        <div class="filter-container">
+            <div class="filter-area">
+                <i>city</i>:
+                <select id="city" style="width: 120px"></select>
+                <i>Category</i>:
+                <select id="category" style="width: 120px"></select>
+                <i>Organizer</i>:
+                <select id="organizer" style="width: 120px"></select>
+            </div>
+            <div class="operate-area">
+                <button id="search-btn">Search</button>
+                <button id="reset-btn">Reset</button>
+            </div>
+        </div>
+        <table class="table-container" border="1">
+            <thead>
+            <tr>
+                <th>Index</th>
+                <th>Caption</th>
+                <th>Organizer</th>
+                <th>Category</th>
+                <th>City</th>
+                <th>Target Funding</th>
+                <th>Current Funding</th>
+            </tr>
+            </thead>
+            <tbody id="tableData"></tbody>
+        </table>
+        <div class="data-empty">Empty Data</div>
+    </div>
+</div>
+</body>
+<script src="./js/http.js"></script>
+<script>
+    // Page initialization is complete
+    window.onload = function() {
+        searchAllCategory();
+        searchAllOrganizer();
+        searchAllCity();
+        searchDataByFilterItem();
+        document.getElementById('search-btn').onclick = searchDataByFilterItem;
+        document.getElementById('reset-btn').onclick = resetData;
+    }
+    // search All Category
+    function searchAllCategory() {
+        // no params
+        httpRequest('/searchAllCategory').then(response => {
+            const emptyOption = document.createElement('option');
+            emptyOption.value = '';
+            emptyOption.selected = true;
+            emptyOption.innerHTML = 'select...';
+            document.querySelector('#category').appendChild(emptyOption);
+            // Traversal node
+            for (let j = 0; j < response.length; j++) {
+                const op = document.createElement('option');
+                op.value =  response[j].category_id;
+                op.innerHTML = response[j].name;
+                document.querySelector('#category').appendChild(op);
+            }
+        });
+    }
+    // search All Organizer
+    function searchAllOrganizer() {
+        // no params
+        httpRequest('/searchAllOrganizer').then(response => {
+            const emptyOption = document.createElement('option');
+            emptyOption.value = '';
+            emptyOption.selected = true;
+            emptyOption.innerHTML = 'select...';
+            document.querySelector('#organizer').appendChild(emptyOption);
+            for (let j = 0; j < response.length; j++) {
+                const op = document.createElement('option');
+                op.value =  response[j].organizer;
+                op.innerHTML = response[j].organizer;
+                document.querySelector('#organizer').appendChild(op);
+            }
+        });
+    }
+    // search All City
+    function searchAllCity() {
+        // no params
+        httpRequest('/searchAllCity').then(response => {
+            const emptyOption = document.createElement('option');
+            emptyOption.value = '';
+            emptyOption.selected = true;
+            emptyOption.innerHTML = 'select...';
+            document.querySelector('#city').appendChild(emptyOption);
+            for (let j = 0; j < response.length; j++) {
+                const op = document.createElement('option');
+                op.value =  response[j].city;
+                op.innerHTML = response[j].city;
+                document.querySelector('#city').appendChild(op);
+            }
+        });
+    }
+    // search Data By Filter Item
+    function searchDataByFilterItem() {
+        const categoryId = document.getElementById('category').value;
+        const organizer = document.getElementById('organizer').value;
+        const city = document.getElementById('city').value;
+        httpRequest('/searchDataByFilterItem', {
+            category_id: !!categoryId ? categoryId : '',
+            organizer: !!organizer ? organizer : '',
+            city: !!city ? city : '',
+        }).then(response => {
+            const tableData = document.querySelector('#tableData');
+            // reset table data
+            tableData.innerHTML = '';
+            if (!!response.length) {
+                // Hide empty data
+                document.getElementsByClassName('data-empty')[0].style.display = 'none';
+                const nodes = [];
+                for (let j = 0; j < response.length; j++) {
+                    // create item tr
+                    const item = document.createElement('tr');
+                    item.innerHTML = `
+                        <td>${response[j].fundraiser_id}</td>
+                        <td><a href="./detail.html?id=${response[j].fundraiser_id}">${response[j].caption}</a></td>
+                        <td>${response[j].organizer}</td>
+                        <td>${response[j].name}</td>
+                        <td>${response[j].city}</td>
+                        <td>${response[j].target_funding}</td>
+                        <td>${response[j].current_funding}</td>
+            `;
+                    tableData.appendChild(item);
+                }
+                return;
+            }
+            // show empty data
+            document.getElementsByClassName('data-empty')[0].style.display = 'block';
+        });
+    }
+    // reset data
+    function resetData() {
+        document.getElementById('category').value = '';
+        document.getElementById('organizer').value = '';
+        document.getElementById('city').value = '';
+        searchDataByFilterItem();
+    }
+</script>
+</html>

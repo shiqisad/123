@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/reset.css">
+</head>
+<body>
+<div class="system-container">
+    <div class="container-header">
+        <div class="header-name">CrowdFunding System</div>
+        <div class="nav-list">
+            <a href="./index.html" class="nav-item">Home</a>
+            <a href="./fundraiser.html" class="nav-item">Fundraiser</a>
+        </div>
+    </div>
+    <div class="container-content">
+        <img src="./imgs/img1.png" alt="" class="home-img">
+        <div class="info">
+            <div class="list"></div>
+            <div class="welcome">
+                Join us and together we will make our dreams come true<br>
+                Take a brave step and make a difference.
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="./js/http.js"></script>
+<script>
+    searchData();
+    // search Data
+    function searchData() {
+        const list = document.getElementsByClassName('list')[0];
+        list.innerHTML ='';
+        httpRequest('/searchDataByFilterItem', {
+            category_id: '',
+            organizer:  '',
+            city: '',
+        }).then(response => {
+            for (let j = 0; j < 2; j++) {
+                // create item tr
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                <a href="./detail.html?fundiaiser_id=${response[j].fundraiser_id}">
+                    <div id="caption">${response[j].caption}</div>
+                    <div id="category">${response[j].name}</div>
+                <div style="display: flex;align-items: center">
+                <div id="current">$${response[j].current_funding}</div>
+                <div id="target">$${response[j].target_funding}</div>
+                </div>
+                <div id="city">${response[j].city}</div>
+                <div id="organizer">${response[j].organizer}</div>
+                </a>
+            `;
+                list.appendChild(item);
+            }
+        });
+    }
+</script>
+</html>
